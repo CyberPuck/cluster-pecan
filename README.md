@@ -54,15 +54,53 @@ Use this to install the following:
 
 - Raspberry Pi OS Lite (32-bit)
 - Press the Settings icon "⚙️", then fill in the following details:
+1. Set the Hostname
 1. Configured for SSH access, Check `Enable SSH`
     - Select `Allow public-key authentication only`
     - Copy the SSH public key contents into `Set authorized_keys for <user>`
-2. Configure the username and password:
+1. Configure the username and password:
     - username: pi
     - password: <use a tool like KeePass to generate password>
-3. **For main node** Setup Wi-Fi settings
+1. **For main node** Setup Wi-Fi settings
     - SSID
     - Password
     - ***Set the country code!***
-4. Other defaults are okay.
-5. Press `SAVE`
+1. Other defaults are okay.
+1. Press `SAVE`
+
+## Automated Setup
+
+Running the `setup_cluster.py` script will auto-configure all nodes assigned to
+the network.
+
+### Main Node Setup
+
+The main node needs the following packages:
+
+- dnsmasq
+
+The networking for `eth0` (physical Ethernet) needs to be configured for:
+
+- 10.0.0.1/24 IP range
+- dnsmasq needs to be setup for IP address handling
+- IP tables need to be configured to allow Internet traffic into the cluster
+- Generate hosts file for all nodes?
+- Get kubernetes cluster configuration settings for all other nodes?
+
+### All Nodes Setup
+
+The following is needed on **all** nodes:
+
+- kubeadm
+- kubelet
+- kubectl
+- kubernetes-cni
+
+These packages need the kubernetes.io registry added as a package registry to
+install.
+
+The following needs to be setup:
+
+- Hostname lists added with IP addresses assigned (generated from `main-node`?)
+- Kubernetes configured
+- Nodes attached to cluster

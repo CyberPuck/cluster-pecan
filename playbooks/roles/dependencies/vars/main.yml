@@ -1,0 +1,5 @@
+---
+# Dependency packages to be installed
+
+dependencies:
+  - dnsmasq
