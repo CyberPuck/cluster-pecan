@@ -1,6 +1,6 @@
 # Cluster Pecan 🥧🥜 (No Pecan emoji 😿)
 
-This is a configuration as code source for a kubernetes cluster.  It has the
+This is a configuration as code source for a kubernetes cluster. It has the
 code needed to setup a simple Raspberry Pi cluster for experimentation.
 
 This will setup four individual nodes:
@@ -12,7 +12,7 @@ This will setup four individual nodes:
 
 ## Setup Command Computer
 
-The computer running these scripts needs to be configured.  Run the following:
+The computer running these scripts needs to be configured. Run the following:
 
 ### VirtualEnv Setup for Python
 
@@ -68,6 +68,12 @@ Use this to install the following:
 1. Other defaults are okay.
 1. Press `SAVE`
 
+## Network Access Through `main-node`
+
+This requires running `setup_pivpn.py`, which will configure the `main-node`
+with an OpenVpn configured pivpn. Once completed run OpenVPN on control
+computer to be able to access and run the ansible commands against the targets.
+
 ## Automated Setup
 
 Running the `setup_cluster.py` script will auto-configure all nodes assigned to
@@ -78,6 +84,7 @@ the network.
 The main node needs the following packages:
 
 - dnsmasq
+- pivpn (Ansible role for VPN access to network)
 
 The networking for `eth0` (physical Ethernet) needs to be configured for:
 
