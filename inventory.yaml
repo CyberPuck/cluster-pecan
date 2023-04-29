@@ -1,0 +1,21 @@
+---
+# Resources in the cluster
+cluster:
+  hosts:
+    main-node:
+      ansible_host: main-node
+      ansible_user: pi
+    nodes:
+      node-1:
+        ansible_host: node-1
+        ansible_user: pi
+      node-2:
+        ansible_host: node-2
+        ansible_user: pi
+      node-3:
+        ansible_host: node-3
+        ansible_user: pi
+      node-4:
+        ansible_host: node-4
+        ansible_user: pi
+      

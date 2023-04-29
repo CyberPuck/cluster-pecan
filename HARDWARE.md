@@ -1,4 +1,4 @@
-# Current Hardware
+# Hardware
 
 This is a summary of the current hardware configuration for the cluster.
 
