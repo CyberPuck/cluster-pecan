@@ -1,9 +1,0 @@
----
-# Dependencies for the main node
-
-- name: Install Dependencies
-  become: true
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ dependencies }}"

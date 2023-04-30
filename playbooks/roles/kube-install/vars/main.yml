@@ -2,4 +2,7 @@
 # Dependency packages to be installed
 
 dependencies:
-  - dnsmasq
+  - kubelet
+  - kubeadm
+  - kubectl
+  - kubernetes-cni
