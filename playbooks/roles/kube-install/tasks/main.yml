@@ -1,0 +1,27 @@
+---
+# Dependencies for all nodes
+- name: Install encryption key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg.asc
+    state: present
+
+- name: Update Repository List
+  ansible.builtin.apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    filename: kubernetes.list
+    state: present
+
+- name: Running "apt-get update"
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Running "apt-get upgrade"
+  ansible.builtin.apt:
+    upgrade: yes
+
+- name: Install node Dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dependencies }}"

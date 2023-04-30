@@ -1,0 +1,19 @@
+---
+# tasks file for dnsmaq
+
+- name: Install main-node Dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dependencies }}"
+
+- name: Copy dnsmasq config
+  ansible.builtin.copy:
+    src: ./playbooks/roles/dnsmasq/templates/dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+
+- name: Restart dnsmasq
+  ansible.builtin.restart:
+    name: dnsmasq
+    state: restarted
