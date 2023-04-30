@@ -19,7 +19,7 @@ https://github.com/pivpn/pivpn
 
 The current example is the following:
 ```BASH
-curl -L https://install.pivpn.io | bash
+curl -L https://install.pivpn.io | bash -s --unattended /etc/pivpn/setupVars.conf
 ```
 
 This will install OpenVPN on `main-node` with the user `pi` having an OpenVPN
