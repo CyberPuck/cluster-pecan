@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0 # needed for progressive mode to work
 
       - name: Setup venv
-        run: setup_venv.sh
+        run: ${PWD}/setup_venv.sh
 
       - name: Activate venv and run lint
-        run: venv/bin/activate & ansible-lint
+        run: ${PWD}/venv/bin/activate & ansible-lint
