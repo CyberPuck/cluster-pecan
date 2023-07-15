@@ -23,3 +23,7 @@ jobs:
 
       - name: Ansible Linter
         uses: ansible/ansible-lint-action@main
+        env:
+          ANSIBLE_LIBRARY: '/usr/share/ansible/collections'
+        with:
+          path: /home/runner/.local/lib/python3.10/site-packages/ansible_collections
