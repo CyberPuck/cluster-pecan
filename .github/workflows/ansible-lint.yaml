@@ -12,10 +12,10 @@ jobs:
         with:
           fetch-depth: 0 # needed for progressive mode to work
 
-      - name: Install ansible-core
-        run: pip3 install ansible-core
+      - name: Install pip requirements
+        run: pip install -r requirements.txt
 
-      - name: Ansible version?
+      - name: Ansible version
         run: ansible --version
 
       - name: Ansible Linter
