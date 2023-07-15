@@ -15,5 +15,5 @@ jobs:
       - name: Setup and run linter
         run: |
           ${PWD}/setup_venv.sh
-          ${PWD}/venv/bin/activate
+          source ${PWD}/venv/bin/activate
           ansible-lint
