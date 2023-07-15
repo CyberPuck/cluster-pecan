@@ -1,0 +1,16 @@
+name: Ansible Lint
+# Base work pulled from: https://github.com/ansible/ansible-lint-action
+# Need to disable truthy check for `on` key
+on: [push, pull_request] # yamllint disable-line rule:truthy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # needed for progressive mode to work
+
+      - name: Ansible Linter
+        uses: ansible/ansible-lint-action@main
