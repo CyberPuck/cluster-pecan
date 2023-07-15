@@ -18,5 +18,8 @@ jobs:
       - name: Ansible version
         run: ansible --version
 
+      - name: Ansible collections installed
+        run: ansible-galaxy collection list
+
       - name: Ansible Linter
         uses: ansible/ansible-lint-action@main
