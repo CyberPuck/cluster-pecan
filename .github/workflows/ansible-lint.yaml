@@ -1,6 +1,7 @@
 name: Ansible Lint
 # Base work pulled from: https://github.com/ansible/ansible-lint-action
-on: [push, pull_request]
+# Need to disable truthy check for `on` key
+on: [push, pull_request] # yamllint disable-line rule:truthy
 
 jobs:
   build:
