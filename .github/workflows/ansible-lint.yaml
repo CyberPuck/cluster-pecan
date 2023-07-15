@@ -15,5 +15,8 @@ jobs:
       - name: Install ansible-core
         run: pip3 install ansible-core
 
+      - name: Ansible version?
+        run: ansible --version
+
       - name: Ansible Linter
         uses: ansible/ansible-lint-action@main
