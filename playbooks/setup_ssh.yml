@@ -7,7 +7,7 @@
     - name: Configure local SSH settings for main node
       community.general.ssh_config:
         remote_user: pi
-        user: "{{ lookup('env','USER') }}"
+        user: "{{ lookup('env', 'USER') }}"
         host: "main-node"
         hostname: "main-node"
         identity_file: "~/.ssh/cluster_key"

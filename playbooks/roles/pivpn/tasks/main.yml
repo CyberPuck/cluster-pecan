@@ -1,10 +1,10 @@
 ---
 # tasks file for pivpn
 - name: Setup pivpn folder
-  file:
+  ansible.builtin.file:
     path: "{{ pivpn_dir }}"
     state: directory
-    mode: 0744
+    mode: "0744"
     owner: pi
     group: pi
 
@@ -12,12 +12,13 @@
   ansible.builtin.get_url:
     url: "{{ pivpn_url }}"
     dest: "{{ pivpn_dir }}"
-    mode: 0744
+    mode: "0744"
 
 - name: Copy over config file
   ansible.builtin.copy:
     src: ./playbooks/roles/pivpn/templates/setup.conf.j2
     dest: "{{ pivpn_dir }}/setup.conf"
+    mode: "0744"
 
 - name: Run the pivpn setup script
   ansible.builtin.script:

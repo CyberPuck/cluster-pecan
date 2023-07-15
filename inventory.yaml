@@ -18,4 +18,3 @@ cluster:
       node-4:
         ansible_host: node-4
         ansible_user: pi
-      

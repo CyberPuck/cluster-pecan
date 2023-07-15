@@ -13,11 +13,11 @@
 
 - name: Running "apt-get update"
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Running "apt-get upgrade"
   ansible.builtin.apt:
-    upgrade: yes
+    upgrade: true
 
 - name: Install node Dependencies
   become: true
