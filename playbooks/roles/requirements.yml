@@ -1,3 +1,4 @@
 ---
 collections:
   - name: community.general.ssh_config
+  - name: community.general.nmcli

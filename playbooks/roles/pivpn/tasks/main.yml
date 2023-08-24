@@ -15,8 +15,8 @@
     mode: "0744"
 
 - name: Copy over config file
-  ansible.builtin.copy:
-    src: ./playbooks/roles/pivpn/templates/setup.conf.j2
+  ansible.builtin.template:
+    src: templates/setup.conf.j2
     dest: "{{ pivpn_dir }}/setup.conf"
     mode: "0744"
 

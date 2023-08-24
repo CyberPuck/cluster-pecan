@@ -1,10 +1,10 @@
 ---
-# vars file for dnsmaq
+# vars file for dnsmasq
 
 dependencies:
   - dnsmasq
 
 dnsmasq:
   - cluster_name: "cluster.home"
-  - start_ip_range: "10.0.0.1"
+  - start_ip_range: "10.0.0.2"
   - end_ip_range: "10.0.0.250"

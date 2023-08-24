@@ -1,2 +1,87 @@
 ---
 # tasks file for networking
+
+# Turn on IP Forwarding
+- name: Setup IP Forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
+## Pre-req for using module
+# - name: Install Network Manager
+#  ansible.builtin.package:
+#    name: network-manager
+#    state: present
+#
+## Need to shutdown and disable dhcpcd and start up network-manager
+# - name: Stop dhcpcd.service
+#  ansible.builtin.service:
+#    name: dhcpcd.service
+#    state: stopped
+#    enabled: false
+#
+# - name: Start network-manager
+#  ansible.builtin.service:
+#    name: network-manager
+#    state: restarted
+#    enabled: true
+#
+## This is for the main node, set it's static IP to `{{ main-node.ip_address }}`
+# - name: Setup Static IP
+#  community.general.nmcli:
+#    conn_name: cluster-net
+#    ifname: eth0
+#    type: ethernet
+#    ip4: "{{ networking_ip_address }}/24"
+#    gw4: "{{ networking_ip_address }}"
+#    state: present
+
+# Round 2, use dhcpcd.conf to set static IP
+- name: Apply dhcpcd.conf file
+  ansible.builtin.template:
+    src: templates/dhcpcd.conf.j2
+    dest: /etc/dhcpcd.conf
+    mode: "0744"
+  become: true
+
+- name: Restart dhcpcd service
+  ansible.builtin.service:
+    name: dhcpcd
+    state: restarted
+  become: true
+
+# Reboot the node, kernel updates require a reboot for iptables to work
+- name: Reboot Pi
+  ansible.builtin.reboot:
+  become: true
+
+# Update IPTABLE Rules
+- name: IPTABLES - WLAN0 MASQUERADE
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: wlan0
+    jump: MASQUERADE
+  become: true
+
+- name: IPTABLES - FORWARD WLAN0 to ETH0
+  ansible.builtin.iptables:
+    chain: FORWARD
+    in_interface: wlan0
+    out_interface: eth0
+    match: state
+    ctstate: RELATED,ESTABLISHED
+    jump: ACCEPT
+  become: true
+
+- name: IPTABLES - FORWARD ETH0 to WLAN0
+  ansible.builtin.iptables:
+    chain: FORWARD
+    in_interface: eth0
+    out_interface: wlan0
+    jump: ACCEPT
+  become: true

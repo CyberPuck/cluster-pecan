@@ -1,4 +1,4 @@
-IPv4dev=eth0
+IPv4dev=wlan0
 IPv4addr="{{ ansible_default_ipv4['address'] }}/24"
 IPv4gw="{{ ansible_default_ipv4['gateway'] }}"
 dhcpReserv=0
@@ -8,7 +8,7 @@ VPN=openvpn
 pivpnNET=10.0.0.0
 subnetClass=24
 pivpnPROTO=udp
-pivpnPORT=1194
+pivpnPORT=1551
 pivpnDNS1=9.9.9.9
 pivpnDNS2=1.1.1.1
 pivpnHOST=main-node.example.com

@@ -1,5 +1,5 @@
 ---
-# tasks file for dnsmaq
+# tasks file for dnsmasq
 
 - name: Install main-node Dependencies
   become: true
@@ -9,8 +9,8 @@
   loop: "{{ dependencies }}"
 
 - name: Copy dnsmasq config
-  ansible.builtin.copy:
-    src: ./playbooks/roles/dnsmasq/templates/dnsmasq.conf.j2
+  ansible.builtin.template:
+    src: templates/dnsmasq.conf.j2
     dest: /etc/dnsmasq.conf
     mode: "0744"
 
