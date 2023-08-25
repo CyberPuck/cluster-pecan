@@ -13,8 +13,10 @@
     src: templates/dnsmasq.conf.j2
     dest: /etc/dnsmasq.conf
     mode: "0744"
+  become: true
 
 - name: Restart dnsmasq
   ansible.builtin.service:
     name: dnsmasq
     state: restarted
+  become: true

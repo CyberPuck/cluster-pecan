@@ -3,20 +3,16 @@
 
 - name: Setup main-node networking
   hosts: main-node
+
+  vars_prompt:
+    - name: ovpn_password
+      prompt: Enter ovpn file password
+
   tasks:
-    - name: Debug vars
-      ansible.builtin.debug:
-        var: ansible_inventory_sources
     - name: Read in inventory file
       ansible.builtin.include_vars:
         file: "{{ ansible_inventory_sources[0] }}"
         name: inventory_file
-    - name: Print out file
-      ansible.builtin.debug:
-        var: inventory_file
-    - name: Access Test ======================
-      ansible.builtin.debug:
-        msg: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
 
     - name: Run networking role
       ansible.builtin.include_role:
@@ -24,10 +20,12 @@
       vars:
         networking_ip_address: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
 
-    # - name: Run dnsmasq role
-    #  ansible.builtin.include_role:
-    #    name: dnsmasq
+    - name: Run dnsmasq role
+      ansible.builtin.include_role:
+        name: dnsmasq
 
-    # - name: Run pivpn role
-    #  ansible.builtin.include_role:
-    #    name: pivpn
+    - name: Run pivpn role
+      ansible.builtin.include_role:
+        name: pivpn
+      vars:
+        pivpn_password: "{{ ovpn_password }}"

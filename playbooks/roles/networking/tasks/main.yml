@@ -11,47 +11,12 @@
     reload: true
   become: true
 
-## Pre-req for using module
-# - name: Install Network Manager
-#  ansible.builtin.package:
-#    name: network-manager
-#    state: present
-#
-## Need to shutdown and disable dhcpcd and start up network-manager
-# - name: Stop dhcpcd.service
-#  ansible.builtin.service:
-#    name: dhcpcd.service
-#    state: stopped
-#    enabled: false
-#
-# - name: Start network-manager
-#  ansible.builtin.service:
-#    name: network-manager
-#    state: restarted
-#    enabled: true
-#
-## This is for the main node, set it's static IP to `{{ main-node.ip_address }}`
-# - name: Setup Static IP
-#  community.general.nmcli:
-#    conn_name: cluster-net
-#    ifname: eth0
-#    type: ethernet
-#    ip4: "{{ networking_ip_address }}/24"
-#    gw4: "{{ networking_ip_address }}"
-#    state: present
-
-# Round 2, use dhcpcd.conf to set static IP
+# Use dhcpcd.conf to set static IP
 - name: Apply dhcpcd.conf file
   ansible.builtin.template:
     src: templates/dhcpcd.conf.j2
     dest: /etc/dhcpcd.conf
     mode: "0744"
-  become: true
-
-- name: Restart dhcpcd service
-  ansible.builtin.service:
-    name: dhcpcd
-    state: restarted
   become: true
 
 # Reboot the node, kernel updates require a reboot for iptables to work
