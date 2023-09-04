@@ -24,8 +24,8 @@
       ansible.builtin.include_role:
         name: dnsmasq
 
-    - name: Run pivpn role
-      ansible.builtin.include_role:
-        name: pivpn
-      vars:
-        pivpn_password: "{{ ovpn_password }}"
+    # - name: Run pivpn role
+    #   ansible.builtin.include_role:
+    #     name: pivpn
+    #   vars:
+    #     pivpn_password: "{{ ovpn_password }}"

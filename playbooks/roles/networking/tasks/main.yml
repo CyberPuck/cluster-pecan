@@ -31,22 +31,25 @@
     chain: POSTROUTING
     out_interface: wlan0
     jump: MASQUERADE
+    comment: Ansible - Setup NAT rule, output wlan0
   become: true
 
-- name: IPTABLES - FORWARD WLAN0 to ETH0
-  ansible.builtin.iptables:
-    chain: FORWARD
-    in_interface: wlan0
-    out_interface: eth0
-    match: state
-    ctstate: RELATED,ESTABLISHED
-    jump: ACCEPT
-  become: true
+# - name: IPTABLES - FORWARD WLAN0 to ETH0
+#   ansible.builtin.iptables:
+#     chain: FORWARD
+#     in_interface: wlan0
+#     out_interface: eth0
+#     # match: state
+#     ctstate: RELATED,ESTABLISHED
+#     jump: ACCEPT
+#     comment: Ansible - Established traffic from wlan0 can be forwarded to eth0
+#   become: true
 
-- name: IPTABLES - FORWARD ETH0 to WLAN0
-  ansible.builtin.iptables:
-    chain: FORWARD
-    in_interface: eth0
-    out_interface: wlan0
-    jump: ACCEPT
-  become: true
+# - name: IPTABLES - FORWARD ETH0 to WLAN0
+#   ansible.builtin.iptables:
+#     chain: FORWARD
+#     in_interface: eth0
+#     out_interface: wlan0
+#     jump: ACCEPT
+#     comment: Ansible - All traffic from eth0 can be forwarded to wlan0
+#   become: true
