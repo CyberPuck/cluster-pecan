@@ -1,6 +1,8 @@
 dnsmasq
 =========
 
+TODO: Decommission once kea-dhcp4 is setup.
+
 Designed to setup a dnsmasq service on a given target.
 
 When searching the J2 file, please use the reg ex: `^[^#]` to find actual

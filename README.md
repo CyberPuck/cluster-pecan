@@ -52,7 +52,7 @@ Following software requirements:
 - On a computer connected to the Internet download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
 Use this to install the following:
 
-- Raspberry Pi OS Lite (32-bit)
+- Raspberry Pi OS Lite (64-bit)
 - Press the Settings icon "⚙️", then fill in the following details:
 1. Set the Hostname
 1. Configured for SSH access, Check `Enable SSH`
@@ -71,7 +71,7 @@ Use this to install the following:
 ## Network Access Through `main-node`
 
 This requires running `setup_pivpn.py`, which will configure the `main-node`
-with an OpenVpn configured pivpn. Once completed run OpenVPN on control
+with an OpenVPN configured pivpn. Once completed run OpenVPN on control
 computer to be able to access and run the ansible commands against the targets.
 
 ## Automated Setup

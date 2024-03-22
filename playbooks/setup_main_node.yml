@@ -4,9 +4,9 @@
 - name: Setup main-node networking
   hosts: main-node
 
-  vars_prompt:
-    - name: ovpn_password
-      prompt: Enter ovpn file password
+  # vars_prompt:
+  #   - name: ovpn_password
+  #     prompt: Enter ovpn file password
 
   tasks:
     - name: Read in inventory file
@@ -19,10 +19,24 @@
         name: networking
       vars:
         networking_ip_address: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
-
-    - name: Run dnsmasq role
+    
+    - name: Setup kea-dhcp4
       ansible.builtin.include_role:
-        name: dnsmasq
+        name: kea
+      vars:
+        kea_dhcp_interfaces: [ 'eth0' ]
+        kea_dhcp4_subnets:
+          subnet: "10.0.0.0/24"
+          pools:
+            - pool: "10.0.0.2 - 10.0.0.20"
+          option-data:
+            - routers: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
+            - domain-name-servers: "1.1.1.1, 9.9.9.9"
+            - domain-name: "cluster.home"
+
+    # - name: Run dnsmasq role
+    #   ansible.builtin.include_role:
+    #     name: dnsmasq
 
     # - name: Run pivpn role
     #   ansible.builtin.include_role:

@@ -1,7 +1,7 @@
 ---
 # tasks file for networking
 
-# Turn on IP Forwarding
+# Turn on IP Forwarding for masquerading
 - name: Setup IP Forwarding
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
@@ -11,45 +11,43 @@
     reload: true
   become: true
 
-# Use dhcpcd.conf to set static IP
+# Use dhcpcd.conf to ignore ETH0, this will enable kea-dhcp4 to work
 - name: Apply dhcpcd.conf file
-  ansible.builtin.template:
-    src: templates/dhcpcd.conf.j2
-    dest: /etc/dhcpcd.conf
-    mode: "0744"
+  ansible.builtin.blockinfile:
+    path: /etc/dhcpcd.conf
+    append_newline: true
+    prepend_newline: true
+    insertafter: "EOF"
+    block: |
+      denyinterface eth0
   become: true
+
+- name: Setup static network on eth0
+  ansible.builtin.template:
+    src: eth0.j2
+    dest: /etc/network/interfaces.d/eth0
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+# NFTable setup
+- name: Overwrite nftables.conf
+  ansible.builtin.copy:
+    src: files/nftables.conf
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Enable and restart NFTables
+  ansible.service.builtin:
+    name: nftables
+    enabled: yes
+    state: restarted
 
 # Reboot the node, kernel updates require a reboot for iptables to work
 - name: Reboot Pi
   ansible.builtin.reboot:
   become: true
-
-# Update IPTABLE Rules
-- name: IPTABLES - WLAN0 MASQUERADE
-  ansible.builtin.iptables:
-    table: nat
-    chain: POSTROUTING
-    out_interface: wlan0
-    jump: MASQUERADE
-    comment: Ansible - Setup NAT rule, output wlan0
-  become: true
-
-# - name: IPTABLES - FORWARD WLAN0 to ETH0
-#   ansible.builtin.iptables:
-#     chain: FORWARD
-#     in_interface: wlan0
-#     out_interface: eth0
-#     # match: state
-#     ctstate: RELATED,ESTABLISHED
-#     jump: ACCEPT
-#     comment: Ansible - Established traffic from wlan0 can be forwarded to eth0
-#   become: true
-
-# - name: IPTABLES - FORWARD ETH0 to WLAN0
-#   ansible.builtin.iptables:
-#     chain: FORWARD
-#     in_interface: eth0
-#     out_interface: wlan0
-#     jump: ACCEPT
-#     comment: Ansible - All traffic from eth0 can be forwarded to wlan0
-#   become: true

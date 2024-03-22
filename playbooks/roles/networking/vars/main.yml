@@ -1,4 +1,4 @@
 ---
 # vars file for networking
 
-ip_address: ""
+broadcast_address: "10.0.0.255"
