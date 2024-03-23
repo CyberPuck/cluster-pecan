@@ -24,4 +24,4 @@
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ dependencies }}"
+  loop: "{{ kube_install_dependencies }}"

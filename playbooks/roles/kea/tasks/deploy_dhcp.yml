@@ -1,4 +1,4 @@
-- name: "Copy Kea DHCP{{ outer_item.dhcp_ip_version }} configuration files"
+- name: "Copy configuration files for Kea DHCP{{ outer_item.dhcp_ip_version }}"
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ kea_container_base_dir }}/config/{{ item | regex_replace('.j2', '') }}"
@@ -10,7 +10,7 @@
     - "subnet{{ outer_item.dhcp_ip_version }}.json.j2"
   register: kea_config
 
-- name: "Start Kea DHCP{{ outer_item.dhcp_ip_version }} container"
+- name: "Start container for Kea DHCP{{ outer_item.dhcp_ip_version }}"
   community.docker.docker_container:
     name: "{{ outer_item.container_name }}"
     image: "{{ outer_item.container_image }}"
@@ -27,7 +27,7 @@
     network_mode: host
     purge_networks: true
 
-- name: "Reload Kea DHCP{{ outer_item.dhcp_ip_version }} configuration"
+- name: "Reload configuration for Kea DHCP{{ outer_item.dhcp_ip_version }}"
   ansible.builtin.command: "docker kill --signal=HUP {{ outer_item.container_name }}"
   when: kea_config.changed
   notify: Reload Kea Control Agent

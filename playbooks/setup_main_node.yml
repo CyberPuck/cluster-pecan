@@ -19,12 +19,12 @@
         name: networking
       vars:
         networking_ip_address: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
-    
+
     - name: Setup kea-dhcp4
       ansible.builtin.include_role:
         name: kea
       vars:
-        kea_dhcp_interfaces: [ 'eth0' ]
+        kea_dhcp_interfaces: ['eth0']
         kea_dhcp4_subnets:
           subnet: "10.0.0.0/24"
           pools:

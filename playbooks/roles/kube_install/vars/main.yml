@@ -1,7 +1,7 @@
 ---
 # Dependency packages to be installed
 
-dependencies:
+kube_install_dependencies:
   - kubelet
   - kubeadm
   - kubectl

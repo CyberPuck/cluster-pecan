@@ -1,10 +1,9 @@
 ---
 # vars file for dnsmasq
 
-dependencies:
+dnsmasq_dependencies:
   - dnsmasq
 
-dnsmasq:
-  cluster_name: "cluster.home"
-  start_ip_range: "10.0.0.10"
-  end_ip_range: "10.0.0.200"
+dnsmasq_cluster_name: "cluster.home"
+dnsmasq_start_ip_range: "10.0.0.10"
+dnsmasq_end_ip_range: "10.0.0.200"

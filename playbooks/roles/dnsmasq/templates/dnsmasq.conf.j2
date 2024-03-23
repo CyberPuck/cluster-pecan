@@ -24,11 +24,11 @@ port=0
 # 2) Sets the "domain" DHCP option thereby potentially setting the
 #    domain of all systems configured by DHCP
 # 3) Provides the domain part for "expand-hosts"
-domain={{ dnsmasq.cluster_name }}
+domain={{ dnsmasq_cluster_name }}
 
 # Uncomment this to enable the integrated DHCP server, you need
 # to supply the range of addresses available for lease and optionally
 # a lease time. If you have more than one network, you will need to
 # repeat this for each network on which you want to supply DHCP
 # service.
-dhcp-range={{ dnsmasq.start_ip_range }},{{ dnsmasq.end_ip_range }},255.255.255.0,12h
+dhcp-range={{ dnsmasq_start_ip_range }},{{ dnsmasq_end_ip_range }},255.255.255.0,12h
