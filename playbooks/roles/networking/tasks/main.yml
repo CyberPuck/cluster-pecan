@@ -42,7 +42,7 @@
   become: true
 
 - name: Enable and restart NFTables
-  ansible.service.builtin:
+  ansible.builtin.service:
     name: nftables
     enabled: yes
     state: restarted
