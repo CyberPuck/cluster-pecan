@@ -1,3 +1,5 @@
 - name: "Reload Kea Control Agent"
   ansible.builtin.command: "docker kill --signal=HUP {{ kea_ctrl_agent_container_name }}"
+  register: docker_output
+  changed_when: docker_output.rc == 0
   when: kea_ctrl_agent_enabled

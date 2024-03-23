@@ -28,6 +28,6 @@
     purge_networks: true
 
 - name: "Reload configuration for Kea DHCP{{ outer_item.dhcp_ip_version }}"
+  when: kea_config.changed # noqa: no-handler
   ansible.builtin.command: "docker kill --signal=HUP {{ outer_item.container_name }}"
-  when: kea_config.changed
   notify: Reload Kea Control Agent
