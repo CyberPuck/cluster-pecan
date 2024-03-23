@@ -29,7 +29,7 @@
 
 - name: "Reload configuration for Kea DHCP{{ outer_item.dhcp_ip_version }}"
   when: kea_config.changed # noqa: no-handler
-  ansible.builtin.command: "docker kill --signal=HUP {{ outer_item.container_name }}"
   register: docker_output
   changed_when: docker_output.rc == 0
+  ansible.builtin.command: "docker kill --signal=HUP {{ outer_item.container_name }}"
   notify: Reload Kea Control Agent
