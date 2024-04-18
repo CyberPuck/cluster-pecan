@@ -40,12 +40,8 @@
     group: root
     mode: '0755'
   become: true
-
-- name: Enable and restart NFTables
-  ansible.builtin.service:
-    name: nftables
-    enabled: true
-    state: restarted
+  notify:
+    - Enable and restart NFTables
 
 # Reboot the node, kernel updates require a reboot for iptables to work
 - name: Reboot Pi

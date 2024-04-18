@@ -197,6 +197,17 @@ table ip nat {
 - Start nft `sudo systemctl start nftables`
 
 
+## Current Errors
+
+```
+failed: [main-node] (item=/srv/kea) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea"}
+failed: [main-node] (item=/srv/kea/config) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea/config", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea/config"}
+failed: [main-node] (item=/srv/kea/leases) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea/leases", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea/leases"}
+failed: [main-node] (item=/srv/kea/logs) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea/logs", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea/logs"}
+failed: [main-node] (item=/srv/kea/sockets) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea/sockets", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea/sockets"}
+failed: [main-node] (item=/srv/kea/entrypoint.d) => {"ansible_loop_var": "item", "changed": false, "item": "/srv/kea/entrypoint.d", "msg": "There was an issue creating /srv/kea as requested: [Errno 13] Permission denied: b'/srv/kea'", "path": "/srv/kea/entrypoint.d"}
+```
+
 # TODO
 
 0. ISC-DHCP-SERVER is EOL as of 2022! Switch to isc-kea-dhcp4-server

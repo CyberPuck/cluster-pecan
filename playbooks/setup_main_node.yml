@@ -2,6 +2,8 @@
 # This is the first round of main-node setup
 
 - name: Setup main-node networking
+  # Multiple services require root, run entire package as root
+  # Please ensure the folder created have the correct **user** permissions
   hosts: main-node
 
   # vars_prompt:
@@ -13,6 +15,12 @@
       ansible.builtin.include_vars:
         file: "{{ ansible_inventory_sources[0] }}"
         name: inventory_file
+    
+    # Still not working, cant find the files?
+    # https://docs.docker.com/engine/install/raspberry-pi-os/
+    - name: Setup docker
+      ansible.builtin.include_role:
+        name: docker
 
     - name: Run networking role
       ansible.builtin.include_role:
