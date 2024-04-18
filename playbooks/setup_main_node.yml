@@ -15,9 +15,7 @@
       ansible.builtin.include_vars:
         file: "{{ ansible_inventory_sources[0] }}"
         name: inventory_file
-    
-    # Still not working, cant find the files?
-    # https://docs.docker.com/engine/install/raspberry-pi-os/
+
     - name: Setup docker
       ansible.builtin.include_role:
         name: docker

@@ -20,11 +20,13 @@
   ansible.builtin.command:
     cmd: dpkg --print-architecture
   register: docker_arch
+  changed_when: false
 
 - name: Get VERSION_CODENAME
   ansible.builtin.shell:
     cmd: . /etc/os-release && echo "$VERSION_CODENAME"
   register: version_codename
+  changed_when: false
 
 - name: Create apt docker file
   ansible.builtin.template:
@@ -36,7 +38,7 @@
 
 - name: Update
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install docker
   ansible.builtin.package:
@@ -46,4 +48,4 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-    state: latest
+    state: present
