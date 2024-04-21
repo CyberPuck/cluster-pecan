@@ -32,13 +32,16 @@
       vars:
         kea_dhcp_interfaces: ['eth0']
         kea_dhcp4_subnets:
-          subnet: "10.0.0.0/24"
-          pools:
-            - pool: "10.0.0.2 - 10.0.0.20"
-          option-data:
-            - routers: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
-            - domain-name-servers: "1.1.1.1, 9.9.9.9"
-            - domain-name: "cluster.home"
+          - subnet: "10.0.0.0/24"
+            pools:
+              - pool: "10.0.0.2 - 10.0.0.20"
+            option-data:
+              - name: "routers"
+                data: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
+              - name: "domain-name-servers"
+                data: "1.1.1.1, 9.9.9.9"
+              - name: "domain-name"
+                data: "cluster.home"
 
     # - name: Run dnsmasq role
     #   ansible.builtin.include_role:

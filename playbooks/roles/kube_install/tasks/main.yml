@@ -1,5 +1,7 @@
 ---
 # Dependencies for all nodes
+# TODO: Follow instructions here:
+# https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/#how-to-migrate-deb
 - name: Install encryption key
   ansible.builtin.apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg.asc

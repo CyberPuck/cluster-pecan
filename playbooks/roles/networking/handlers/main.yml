@@ -7,3 +7,7 @@
     enabled: true
     state: restarted
   become: true
+
+- name: Reboot Pi
+  ansible.builtin.reboot:
+  become: true

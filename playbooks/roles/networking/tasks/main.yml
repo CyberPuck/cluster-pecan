@@ -30,6 +30,8 @@
     group: root
     mode: '0644'
   become: true
+  notify:
+    - Reboot Pi
 
 # NFTable setup
 - name: Overwrite nftables.conf
@@ -42,8 +44,4 @@
   become: true
   notify:
     - Enable and restart NFTables
-
-# Reboot the node, kernel updates require a reboot for iptables to work
-- name: Reboot Pi
-  ansible.builtin.reboot:
-  become: true
+    - Reboot Pi
