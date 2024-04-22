@@ -1,0 +1,40 @@
+---
+
+- name: Install WireGuard
+  ansible.builtin.package:
+    name:
+      - wireguard
+    state: present
+
+- name: Generate private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  register: wg_private_key
+
+- name: Write private key
+  ansible.builtin.copy:
+    content: wg_private_key.stdout
+    dest: /etc/wireguard/private.key
+    mode: go=
+
+- name: Genearte public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: wg_private_key.stdout
+  register: wg_public_key
+
+- name: Write public key
+  ansible.builtin.copy:
+    content: wg_public_key.stdout
+    dest: /etc/wireguard/public.key
+
+- name: Setup wg0 config
+  ansible.builtin.template:
+    src: templates/wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+
+- name: Start WireGuard Service
+  ansible.builtin.service:
+    name: wg-quick@wg0.service
+    state: started
+    enabled: true

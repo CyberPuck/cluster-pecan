@@ -43,12 +43,6 @@
               - name: "domain-name"
                 data: "cluster.home"
 
-    # - name: Run dnsmasq role
-    #   ansible.builtin.include_role:
-    #     name: dnsmasq
-
-    # - name: Run pivpn role
-    #   ansible.builtin.include_role:
-    #     name: pivpn
-    #   vars:
-    #     pivpn_password: "{{ ovpn_password }}"
+    - name: Run wireguard role
+      ansible.builtin.include_role:
+        name: wireguard

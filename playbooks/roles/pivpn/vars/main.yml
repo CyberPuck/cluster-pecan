@@ -1,4 +1,0 @@
----
-# vars file for pivpn
-pivpn_url: "https://install.pivpn.io"
-pivpn_dir: "/etc/pivpn"
