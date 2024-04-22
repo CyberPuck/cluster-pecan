@@ -35,7 +35,7 @@
   ansible.builtin.template:
     src: templates/wg0.conf.j2
     dest: /etc/wireguard/wg0.conf
-    mode: mode: go=
+    mode: go=
 
 - name: Start WireGuard Service
   ansible.builtin.service:
