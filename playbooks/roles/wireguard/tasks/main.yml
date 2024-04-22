@@ -9,6 +9,7 @@
 - name: Generate private key
   ansible.builtin.command:
     cmd: wg genkey
+    creates: /etc/wireguard/private.key
   register: wg_private_key
 
 - name: Write private key
@@ -17,21 +18,24 @@
     dest: /etc/wireguard/private.key
     mode: go=
 
-- name: Genearte public key
+- name: Generate public key
   ansible.builtin.command:
     cmd: wg pubkey
     stdin: wg_private_key.stdout
+    creates: /etc/wireguard/public.key
   register: wg_public_key
 
 - name: Write public key
   ansible.builtin.copy:
     content: wg_public_key.stdout
     dest: /etc/wireguard/public.key
+    mode: go=
 
 - name: Setup wg0 config
   ansible.builtin.template:
     src: templates/wg0.conf.j2
     dest: /etc/wireguard/wg0.conf
+    mode: mode: go=
 
 - name: Start WireGuard Service
   ansible.builtin.service:
