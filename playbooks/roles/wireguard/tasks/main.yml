@@ -1,5 +1,4 @@
 ---
-
 - name: Install WireGuard
   ansible.builtin.package:
     name:
@@ -9,26 +8,34 @@
 - name: Generate private key
   ansible.builtin.command:
     cmd: wg genkey
-    creates: /etc/wireguard/private.key
   register: wg_private_key
+
+- name: Debug private key
+  ansible.builtin.debug:
+    msg: "{{ wg_private_key }}"
 
 - name: Write private key
   ansible.builtin.copy:
-    content: wg_private_key.stdout
+    content: "{{ wg_private_key.stdout }}"
     dest: /etc/wireguard/private.key
+    force: true
     mode: go=
 
 - name: Generate public key
   ansible.builtin.command:
     cmd: wg pubkey
-    stdin: wg_private_key.stdout
-    creates: /etc/wireguard/public.key
+    stdin: "{{ wg_private_key.stdout }}"
   register: wg_public_key
+
+- name: Debug public key
+  ansible.builtin.debug:
+    msg: "{{ wg_public_key }}"
 
 - name: Write public key
   ansible.builtin.copy:
-    content: wg_public_key.stdout
+    content: "{{ wg_public_key.stdout }}"
     dest: /etc/wireguard/public.key
+    force: true
     mode: go=
 
 - name: Setup wg0 config

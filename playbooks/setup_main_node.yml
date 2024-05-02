@@ -5,7 +5,7 @@
   # Multiple services require root, run entire package as root
   # Please ensure the folder created have the correct **user** permissions
   hosts: main-node
-
+  become: true
   # vars_prompt:
   #   - name: ovpn_password
   #     prompt: Enter ovpn file password
