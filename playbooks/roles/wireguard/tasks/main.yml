@@ -11,10 +11,6 @@
   changed_when: true
   register: wg_private_key
 
-- name: Debug private key
-  ansible.builtin.debug:
-    msg: "{{ wg_private_key }}"
-
 - name: Write private key
   ansible.builtin.copy:
     content: "{{ wg_private_key.stdout }}"
@@ -28,10 +24,6 @@
     stdin: "{{ wg_private_key.stdout }}"
   changed_when: true
   register: wg_public_key
-
-- name: Debug public key
-  ansible.builtin.debug:
-    msg: "{{ wg_public_key }}"
 
 - name: Write public key
   ansible.builtin.copy:
