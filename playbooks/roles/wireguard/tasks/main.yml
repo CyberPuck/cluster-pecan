@@ -76,7 +76,7 @@
   ansible.builtin.template:
     src: "templates/peer.conf.j2"
     dest: "{{ wireguard_tunnel_interface }}.peer.conf"
-    mode: 0640
+    mode: "0640"
   delegate_to: localhost
 
 - name: Enable and bounce WireGuard Service
