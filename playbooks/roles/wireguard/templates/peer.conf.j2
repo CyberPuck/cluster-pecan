@@ -1,8 +1,8 @@
 [Interface]
 PrivateKey = {{ wg_peer_private_key.stdout }}
-Address = {{ peer_ip }}
+Address = {{ wireguard_peer_ip }}
 
 [Peer]
 PublicKey = {{ wg_public_key.stdout }}
-AllowedIPs = {{ allowed_ips }}
-Endpoint = {{ server_address }}:{{ server_port }}
+AllowedIPs = {{ wireguard_allowed_ips }}
+Endpoint = {{ wireguard_server_address }}:{{ wireguard_server_port }}

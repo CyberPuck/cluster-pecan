@@ -1,7 +1,7 @@
 ---
-tunnel_interface: wg0
-server_address: main-node
-server_ip: 10.0.1.1/24
-server_port: 51820
-peer_ip: 10.0.1.2/24
-allowed_ips: 10.0.0.0/23
+wireguard_tunnel_interface: wg0
+wireguard_server_address: main-node
+wireguard_server_ip: 10.0.1.1/24
+wireguard_server_port: 51820
+wireguard_peer_ip: 10.0.1.2/24
+wireguard_allowed_ips: 10.0.0.0/23

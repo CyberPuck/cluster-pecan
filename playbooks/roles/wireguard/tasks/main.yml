@@ -53,37 +53,39 @@
   changed_when: true
   register: wg_peer_public_key
 
-- name: "Check {{ tunnel_interface }} interface status"
+- name: "Check status for interface {{ wireguard_tunnel_interface }}"
   ansible.builtin.command:
-    cmd: "wg showconf {{ tunnel_interface }}"
+    cmd: "wg showconf {{ wireguard_tunnel_interface }}"
   changed_when: true
   ignore_errors: true
   register: tunnel_status
 
-- name: "Shutdown interface to update server {{ tunnel_interface }} config"
+- name: "Shutdown server interface {{ wireguard_tunnel_interface }}"
   ansible.builtin.command:
-    cmd: "wg-quick down {{ tunnel_interface }}"
+    cmd: "wg-quick down {{ wireguard_tunnel_interface }}"
   when: tunnel_status.rc == 0
+  changed_when: tunnel_status.rc == 0
 
-- name: Setup {{ tunnel_interface }} config
+- name: Setup config for interface {{ wireguard_tunnel_interface }}
   ansible.builtin.template:
     src: "templates/conf.j2"
-    dest: /etc/wireguard/{{ tunnel_interface }}.conf
+    dest: /etc/wireguard/{{ wireguard_tunnel_interface }}.conf
     mode: go=
 
 - name: Writing peer config to local file
   ansible.builtin.template:
     src: "templates/peer.conf.j2"
-    dest: "{{ tunnel_interface }}.peer.conf"
+    dest: "{{ wireguard_tunnel_interface }}.peer.conf"
+    mode: 0640
   delegate_to: localhost
 
 - name: Enable and bounce WireGuard Service
   ansible.builtin.service:
-    name: wg-quick@{{ tunnel_interface }}.service
+    name: wg-quick@{{ wireguard_tunnel_interface }}.service
     state: restarted
     enabled: true
 
-- name: "Setup {{ tunnel_interface }} peer"
+- name: "Setup peer for interface {{ wireguard_tunnel_interface }}"
   ansible.builtin.command:
-    cmd: "wg set {{ tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ allowed_ips }}"
+    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
   changed_when: true
