@@ -8,6 +8,7 @@
 - name: Generate private key
   ansible.builtin.command:
     cmd: wg genkey
+  changed_when: true
   register: wg_private_key
 
 - name: Debug private key
@@ -25,6 +26,7 @@
   ansible.builtin.command:
     cmd: wg pubkey
     stdin: "{{ wg_private_key.stdout }}"
+  changed_when: true
   register: wg_public_key
 
 - name: Debug public key
@@ -38,14 +40,50 @@
     force: true
     mode: go=
 
-- name: Setup wg0 config
+- name: Create peer private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  changed_when: true
+  register: wg_peer_private_key
+
+- name: Create peer public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: "{{ wg_peer_private_key.stdout }}"
+  changed_when: true
+  register: wg_peer_public_key
+
+- name: "Check {{ tunnel_interface }} interface status"
+  ansible.builtin.command:
+    cmd: "wg showconf {{ tunnel_interface }}"
+  changed_when: true
+  ignore_errors: true
+  register: tunnel_status
+
+- name: "Shutdown interface to update server {{ tunnel_interface }} config"
+  ansible.builtin.command:
+    cmd: "wg-quick down {{ tunnel_interface }}"
+  when: tunnel_status.rc == 0
+
+- name: Setup {{ tunnel_interface }} config
   ansible.builtin.template:
-    src: templates/wg0.conf.j2
-    dest: /etc/wireguard/wg0.conf
+    src: "templates/conf.j2"
+    dest: /etc/wireguard/{{ tunnel_interface }}.conf
     mode: go=
 
-- name: Start WireGuard Service
+- name: Writing peer config to local file
+  ansible.builtin.template:
+    src: "templates/peer.conf.j2"
+    dest: "{{ tunnel_interface }}.peer.conf"
+  delegate_to: localhost
+
+- name: Enable and bounce WireGuard Service
   ansible.builtin.service:
-    name: wg-quick@wg0.service
-    state: started
+    name: wg-quick@{{ tunnel_interface }}.service
+    state: restarted
     enabled: true
+
+- name: "Setup {{ tunnel_interface }} peer"
+  ansible.builtin.command:
+    cmd: "wg set {{ tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ allowed_ips }}"
+  changed_when: true

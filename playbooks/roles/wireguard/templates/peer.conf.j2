@@ -1,0 +1,8 @@
+[Interface]
+PrivateKey = {{ wg_peer_private_key.stdout }}
+Address = {{ peer_ip }}
+
+[Peer]
+PublicKey = {{ wg_public_key.stdout }}
+AllowedIPs = {{ allowed_ips }}
+Endpoint = {{ server_address }}:{{ server_port }}

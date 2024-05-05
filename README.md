@@ -70,9 +70,7 @@ Use this to install the following:
 
 ## Network Access Through `main-node`
 
-This requires running `setup_pivpn.py`, which will configure the `main-node`
-with an OpenVPN configured pivpn. Once completed run OpenVPN on control
-computer to be able to access and run the ansible commands against the targets.
+See [the wireguard role README for details](./playbooks/roles/wireguard/README.md).
 
 ## Automated Setup
 
@@ -81,18 +79,13 @@ the network.
 
 ### Main Node Setup
 
-The main node needs the following packages:
+Run the python script `./setup_main_node.py`.
+This script will setup:
 
-- dnsmasq
-- pivpn (Ansible role for VPN access to network)
-
-The networking for `eth0` (physical Ethernet) needs to be configured for:
-
-- 10.0.0.1/24 IP range
-- dnsmasq needs to be setup for IP address handling
-- IP tables need to be configured to allow Internet traffic into the cluster
-- Generate hosts file for all nodes?
-- Get kubernetes cluster configuration settings for all other nodes?
+- docker
+- kea dhcp service for delivering IP addresses
+- networking (IP forwarding and net filter tables)
+- wireguard (to access the cluster from an external network)
 
 ### All Nodes Setup
 

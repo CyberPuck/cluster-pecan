@@ -1,6 +1,21 @@
 # WireGuard Role
 
-- Requires setting up NFTables first
-  - [Following these instructions](https://www.procustodibus.com/blog/2020/11/wireguard-point-to-site-config/#configure-wireguard-on-host-b)
-- [Following DigO setup guide](https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-20-04#step-1-installing-wireguard-and-generating-a-key-pair)
-- Should we autogenerate a user account?
+This role will setup a working wireguard server and client connection file.
+The networking rules for the server are established in the `networking` role
+using net filter tables.
+
+Check `./defaults/main.yml` for the default network and configuration settings.
+By default a file `./playbooks/wg0.peer.conf` will be written to the host on
+the successful completion of this role. Use that file to connect to the
+wireguard server.
+
+## Client Connection
+
+On a linux host simply run:
+
+```bash
+sudo apt-get install wireguard
+wg-quick up playbooks/wg0.peer.conf
+```
+
+A tunnel should be established to the server.
