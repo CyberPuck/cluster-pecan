@@ -6,9 +6,6 @@
   # Please ensure the folder created have the correct **user** permissions
   hosts: main-node
   become: true
-  # vars_prompt:
-  #   - name: ovpn_password
-  #     prompt: Enter ovpn file password
 
   tasks:
     - name: Read in inventory file
@@ -30,7 +27,7 @@
       ansible.builtin.include_role:
         name: kea
       vars:
-        kea_dhcp_interfaces: ['eth0']
+        kea_dhcp_interfaces: ["eth0"]
         kea_dhcp4_subnets:
           - subnet: "10.0.0.0/24"
             pools:

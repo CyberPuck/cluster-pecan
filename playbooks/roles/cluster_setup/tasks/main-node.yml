@@ -1,0 +1,66 @@
+---
+# TODO: Check output of `/proc/cgroups`
+# #subsys_name    hierarchy       num_cgroups     enabled
+# cpuset  0       86      1
+# cpu     0       86      1
+# cpuacct 0       86      1
+# blkio   0       86      1
+# memory  0       86      1
+# devices 0       86      1
+# freezer 0       86      1
+# net_cls 0       86      1
+# perf_event      0       86      1
+# net_prio        0       86      1
+# pids    0       86      1
+#
+# Will need to check for `memory, row 4 (0 vs. 1)`
+
+- name: Check for mem cgroup
+  ansible.builtin.stat:
+    path: /sys/fs/cgroup/memory
+  register: cgroup_memory
+
+#- name: Add cgroups to boot config
+#  ansible.builtin.lineinfile:
+#    path: /boot/cmdline.txt
+#    insertafter: "EOF"
+#    line: " cgroup_enable=memory cgroup_memory=1"
+#    state: present
+#  register: cgroup_result
+#  when: not cgroup_memory.stat.exists
+
+# TODO: We need to **not** insert a newline character or the system won't pick it up
+- name: Add cgroup to boot config
+  ansible.builtin.replace:
+    path: /boot/cmdline.txt
+    regex: "$"
+    replace: " cgroup_enable=memory cgroup_memory=1"
+    register: cgroup_result
+  when: not cgroup_memory.stat.exists
+
+- name: Debug result
+  ansible.builtin.debug:
+    msg: "{{ cgroup_result }}"
+
+- name: Reboot Pi
+  ansible.builtin.reboot:
+  when: not cgroup_memory.stat.exists
+
+- name: Remove containerd config
+  ansible.builtin.file:
+    path: /etc/containerd/config.toml
+    state: absent
+
+- name: Restart containerd
+  ansible.builtin.service:
+    name: containerd.service
+    state: restarted
+
+- name: Setup cluster
+  ansible.builtin.command:
+    cmd: >
+      kubeadm init --pod-network-cidr {{ cluster_setup_pod_cidr }}
+      --token {{ cluster_token }}
+      --apiserver-advertise-address {{ main_node_ip }}
+      --apiserver-cert-extra-sans kubernetes.cluster.home
+      --ignore-preflight-errors=Mem

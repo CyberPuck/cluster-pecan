@@ -6,16 +6,18 @@ cluster:
       ansible_host: main-node
       ansible_user: pi
       ip_address: 10.0.0.1
-    nodes:
-      node-1:
-        ansible_host: node_1
-        ansible_user: pi
-        ip_address: 10.0.0.2
-      node-2:
-        ansible_host: node_2
-        ansible_user: pi
-        ip_address: 10.0.0.3
-      node-3:
-        ansible_host: node_3
-        ansible_user: pi
-        ip_address: 10.0.0.4
+    node-1:
+      inventory_hostname: node-1
+      ansible_host: 10.0.0.5
+      ansible_user: pi
+      ip_address: 10.0.0.5
+    node-2:
+      inventory_hostname: node-2
+      ansible_host: 10.0.0.3
+      ansible_user: pi
+      ip_address: 10.0.0.3
+    node-3:
+      inventory_hostname: node-3
+      ansible_host: 10.0.0.4
+      ansible_user: pi
+      ip_address: 10.0.0.4

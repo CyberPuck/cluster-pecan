@@ -2,9 +2,9 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ kea_container_base_dir }}/config/{{ item | regex_replace('.j2', '') }}"
-    owner: 'root'
-    group: '101'
-    mode: '0664'
+    owner: "root"
+    group: "101"
+    mode: "0664"
   loop:
     - "dhcp{{ outer_item.dhcp_ip_version }}.json.j2"
     - "subnet{{ outer_item.dhcp_ip_version }}.json.j2"
@@ -16,7 +16,7 @@
     image: "{{ outer_item.container_image }}"
     pull: true
     state: started
-    restart_policy: unless-stopped
+    restart_policy: always # on reboot we want dhcp
     command: "{{ outer_item.container_command }}"
     volumes:
       - "{{ kea_container_base_dir }}/config:/kea/config:ro"

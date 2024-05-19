@@ -1,8 +1,4 @@
 # Runs the initial setup of the main-node server.
-# This includes the following:
-# 1. Base networking (IP forwarding, IPTABLES, eth0 static IP)
-# 2. DHCP - through dnsmasq
-# 3. VPN - pivpn
 
 import subprocess
 import os
