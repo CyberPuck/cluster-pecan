@@ -20,7 +20,7 @@
     path: /sys/fs/cgroup/memory
   register: cgroup_memory
 
-#- name: Add cgroups to boot config
+# - name: Add cgroups to boot config
 #  ansible.builtin.lineinfile:
 #    path: /boot/cmdline.txt
 #    insertafter: "EOF"
@@ -30,6 +30,7 @@
 #  when: not cgroup_memory.stat.exists
 
 # TODO: We need to **not** insert a newline character or the system won't pick it up
+# This is missing a required arg
 - name: Add cgroup to boot config
   ansible.builtin.replace:
     path: /boot/cmdline.txt

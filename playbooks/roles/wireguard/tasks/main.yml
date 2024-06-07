@@ -64,13 +64,6 @@
     dest: /etc/wireguard/{{ wireguard_tunnel_interface }}.conf
     mode: go=
 
-- name: Writing peer config to local file
-  ansible.builtin.template:
-    src: "templates/peer.conf.j2"
-    dest: "{{ wireguard_tunnel_interface }}.peer.conf"
-    mode: "0640"
-  delegate_to: localhost
-
 - name: Enable and bounce WireGuard Service
   ansible.builtin.service:
     name: wg-quick@{{ wireguard_tunnel_interface }}.service
@@ -81,3 +74,7 @@
   ansible.builtin.command:
     cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
   changed_when: true
+
+- name: "Setting up peer"
+  ansible.builtin.include_tasks:
+    file: peer.yml

@@ -39,6 +39,7 @@
                 data: "1.1.1.1, 9.9.9.9"
               - name: "domain-name"
                 data: "cluster.home"
+            id: "1"
 
     - name: Run wireguard role
       ansible.builtin.include_role:

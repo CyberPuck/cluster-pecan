@@ -1,0 +1,44 @@
+---
+- name: Install WireGuard on peer
+  ansible.builtin.package:
+    name:
+      - wireguard
+    state: present
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: Writing peer config to local file
+  ansible.builtin.template:
+    src: "templates/peer.conf.j2"
+    dest: "{{ wireguard_tunnel_interface }}.peer.conf"
+    mode: "0644"
+  delegate_to: localhost
+
+- name: Get peer localhost interfaces
+  ansible.builtin.setup:
+    gather_subset:
+      - "interfaces"
+  delegate_to: localhost
+
+- name: Display peer interfaces
+  ansible.builtin.debug:
+    msg: "{{ ansible_interfaces }}"
+  delegate_to: localhost
+
+- name: Shutdown peer wg0 network
+  ansible.builtin.command:
+    cmd: "wg-quick down wg0.peer"
+  when: "'wg0.peer' in item"
+  loop: "{{ ansible_interfaces }}"
+  delegate_to: localhost
+
+- name: Copy peer config
+  ansible.builtin.copy:
+    src: wg0.peer.conf
+    dest: /etc/wireguard/wg0.peer.conf
+  delegate_to: localhost
+
+- name: Setup new peer wg0 network
+  ansible.builtin.command:
+    cmd: "wg-quick up wg0.peer"
+  delegate_to: localhost
