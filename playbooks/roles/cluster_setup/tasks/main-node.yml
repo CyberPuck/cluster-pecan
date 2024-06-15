@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: /etc/systemd/system/kubelet.service.d
     state: directory
+    mode: go=
 
 - name: Create swap file
   ansible.builtin.copy:
@@ -11,9 +12,8 @@
     mode: go=
 
 - name: Restart daemon
-  ansible.builtin.command:
-    cmd: systemctl daemon-reload
-  changed_when: true
+  ansible.builtin.systemd_service:
+    daemon_reload: true
 
 - name: Reset kubeadm
   ansible.builtin.command:
