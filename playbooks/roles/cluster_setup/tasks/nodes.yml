@@ -1,4 +1,8 @@
 ---
 - name: Join cluster
   ansible.builtin.command:
-    cmd: "kubeadm join --token={{ cluster_token }} {{ main_node_ip }}"
+    cmd: >
+      kubeadm join {{ cluster_setup_main_node_ip }}:6443
+      --discovery-token-unsafe-skip-ca-verification
+      --token={{ cluster_token }}
+  changed_when: true
