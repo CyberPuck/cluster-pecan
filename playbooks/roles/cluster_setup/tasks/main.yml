@@ -39,10 +39,10 @@
   register: gpg_file
 
 - name: Add kubernetes key to gpg
-  ansible.builtin.command:
+  ansible.builtin.command: # noqa: inline-env-var
     cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/release.key"
     register: gpg_output
-    changed_when: gpg_output.rc == 0
+  changed_when: gpg_output.rc == 0
   when: not gpg_file.stat.exists
 
 - name: Create apt kubernetes file
@@ -89,7 +89,7 @@
 - name: Get cgroup memory status
   ansible.builtin.shell:
     cmd: set -o pipefail && cat /proc/cgroups | grep memory | awk '{ print $4 }'
-    changed_when: false
+  changed_when: false
   register: cgroup_memory_status
 
 - name: Debug cgroup_memory_status
@@ -100,7 +100,7 @@
   ansible.builtin.shell:
     cmd: echo -n " cgroup_enable=memory cgroup_memory=1" >> /boot/cmdline.txt
     register: cgroup_config
-    changed_when: cgroup_config.rc == 0
+  changed_when: cgroup_config.rc == 0
   when: cgroup_memory_status.stdout == "0"
 
 - name: Reboot Pi

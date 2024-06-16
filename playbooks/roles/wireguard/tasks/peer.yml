@@ -27,9 +27,9 @@
   delegate_to: localhost
 
 - name: Shutdown peer wg0 network
-  ansible.builtin.command:
+  ansible.builtin.command: # noqa: inline-env-var
     cmd: "wg-quick down wg0.peer"
-    changed_when: true
+  changed_when: true
   when: "'wg0.peer' in item"
   loop: "{{ ansible_interfaces }}"
   delegate_to: localhost
@@ -42,7 +42,7 @@
   delegate_to: localhost
 
 - name: Setup new peer wg0 network
-  ansible.builtin.command:
+  ansible.builtin.command: # noqa: inline-env-var
     cmd: "wg-quick up wg0.peer"
-    changed_when: true
+  changed_when: true
   delegate_to: localhost
