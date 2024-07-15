@@ -5,33 +5,24 @@
 - name: Setup IP Forwarding
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
-    value: '1'
+    value: "1"
     sysctl_set: true
     state: present
     reload: true
   become: true
 
-# Use dhcpcd.conf to ignore ETH0, this will enable kea-dhcp4 to work
-- name: Apply dhcpcd.conf file
-  ansible.builtin.blockinfile:
-    path: /etc/dhcpcd.conf
-    append_newline: true
-    prepend_newline: true
-    insertafter: "EOF"
-    block: |
-      denyinterface eth0
-  become: true
-
+# nmcli, set metric high so wlan0 can access Internet
 - name: Setup static network on eth0
-  ansible.builtin.template:
-    src: eth0.j2
-    dest: /etc/network/interfaces.d/eth0
-    owner: root
-    group: root
-    mode: '0644'
-  become: true
-  notify:
-    - Reboot Pi
+  community.general.nmcli:
+    conn_name: cluster-net
+    ifname: eth0
+    type: ethernet
+    ip4: 10.0.0.1/24
+    gw4: 10.0.0.1
+    routes4_extended:
+      - ip: "10.0.0.1/24"
+        metric: 1024
+    state: present
 
 # NFTable setup
 - name: Overwrite nftables.conf
@@ -40,7 +31,7 @@
     dest: /etc/nftables.conf
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   become: true
   notify:
     - Enable and restart NFTables
