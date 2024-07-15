@@ -28,4 +28,5 @@
       --apiserver-advertise-address {{ cluster_setup_main_node_ip }}
       --apiserver-cert-extra-sans kubernetes.cluster.home
       --ignore-preflight-errors=Mem,Swap
+      --v=5
   changed_when: true

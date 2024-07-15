@@ -1,0 +1,217 @@
+---
+# Following instructions here:
+# https://rolandsdev.blog/posts/how-to-install-containerd-on-raspberry-pi/#install-containerd
+# - name: Install apt dependencies
+#   ansible.builtin.package:
+#     name:
+#       - libseccomp
+#       - libseccomp-dev
+#       - btrfs-progs
+#       - libbtrfs-dev
+#       - autoconf
+#       - automake
+#       - libtool
+#     state: present
+# YOLO: Just downloading and adding releases to PATH
+
+- name: Get Go lang version
+  ansible.builtin.command:
+    cmd: go version
+  failed_when:
+    - go_version.rc != 0
+    - go_version.rc != 2
+  register: go_version
+
+- name: Download Go lang
+  ansible.builtin.get_url:
+    url: https://go.dev/dl/go1.22.4.linux-arm64.tar.gz
+    dest: /tmp/
+    mode: 660
+    checksum: sha256:a8e177c354d2e4a1b61020aca3562e27ea3e8f8247eca3170e3fa1e0c2f9e771
+  when: go_version.rc != 0
+
+- name: Extract Go Lang installer
+  ansible.builtin.unarchive:
+    src: /tmp/go1.22.4.linux-arm64.tar.gz
+    dest: /tmp/
+    remote_src: true
+  when: go_version.rc != 0
+
+- name: Copy go lang to bin folder
+  ansible.builtin.copy:
+    src: /tmp/go/bin/go
+    dest: /usr/local/bin
+    mode: 771
+    remote_src: true
+  when: go_version.rc != 0
+
+- name: Update PATH for Go Lang
+  ansible.builtin.shell:
+    cmd: echo 'PATH="$PATH:/usr/local/go/bin"' | tee -a $HOME/.profile
+  changed_when: true
+  when: go_version.rc != 0
+
+- name: Add GOPATH for Go Lang
+  ansible.builtin.shell:
+    cmd: echo "export GOPATH=$(go env GOPATH)" | tee -a $HOME/.profile
+  changed_when: true
+  when: go_version.rc != 0
+
+- name: Remove Go lang download
+  ansible.builtin.file:
+    path: /tmp/go1.22.4.linux-arm64.tar.gz
+    state: absent
+  when: go_version.rc != 0
+
+- name: Remove Go lang tmp
+  ansible.builtin.file:
+    path: /tmp/go
+    state: absent
+  when: go_version.rc != 0
+
+- name: Get runc version
+  ansible.builtin.command:
+    cmd: runc --version
+  failed_when:
+    - runc_version.rc != 0
+    - runc_version.rc != 2
+  register: runc_version
+
+- name: Download runc
+  ansible.builtin.get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.arm64
+    dest: /tmp/runc
+    mode: 770
+    checksum: sha256:4b93701752f5338ed51592b38e039aef8c1a59856d1225df21eba84c2830743c
+  when: runc_version.rc != 0
+
+- name: Copy runc to bin folder
+  ansible.builtin.copy:
+    src: /tmp/runc
+    dest: /usr/local/bin/runc
+    mode: 771
+    remote_src: true
+  when: runc_version.rc != 0
+
+- name: Remove runc download
+  ansible.builtin.file:
+    path: /tmp/runc
+    state: absent
+  when: runc_version.rc != 0
+
+- name: Get protobuf version
+  ansible.builtin.command:
+    cmd: protoc --version
+  failed_when:
+    - protoc_version.rc != 0
+    - protoc_version.rc != 2
+  register: protoc_version
+
+- name: Download Protobuf
+  ansible.builtin.get_url:
+    url: https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-aarch_64.zip
+    dest: /tmp/
+    mode: 770
+    checksum: sha256:8809c2ec85368c6b6e9af161b6771a153aa92670a24adbe46dd34fa02a04df2f
+  when: protoc_version.rc != 0
+
+- name: Create protoc unzip folder
+  ansible.builtin.file:
+    path: /tmp/protoc/
+    state: directory
+    mode: 770
+
+- name: Unzip Protobuf
+  ansible.builtin.unarchive:
+    src: /tmp/protoc-27.1-linux-aarch_64.zip
+    dest: /tmp/protoc/
+    remote_src: yes
+  when: protoc_version.rc != 0
+
+- name: Copy protoc to bin folder
+  ansible.builtin.copy:
+    src: /tmp/protoc/bin/protoc
+    dest: /usr/local/bin/protoc
+    mode: 771
+    remote_src: true
+  when: protoc_version.rc != 0
+
+- name: Delete protoc download
+  ansible.builtin.file:
+    path: /tmp/protoc-27.1-linux-aarch_64.zip
+    state: absent
+  when: protoc_version.rc != 0
+
+- name: Delete unarchived protoc folder
+  ansible.builtin.file:
+    path: /tmp/protoc/
+    state: absent
+  when: protoc_version.rc != 0
+
+- name: Get containerd version
+  ansible.builtin.command:
+    cmd: containerd --version
+  failed_when:
+    - containerd_version != 0
+    - containerd_version != 2
+  register: containerd_version
+
+- name: Download containerd
+  ansible.builtin.get_url:
+    url: https://github.com/containerd/containerd/releases/download/v2.0.0-rc.3/containerd-2.0.0-rc.3-linux-arm64.tar.gz
+    dest: /tmp/
+    mode: 770
+    checksum: sha256:c351fe80f8da958f548a097a7c16a23df3a2939ea1fee0df7c02f6671d999939
+  when: containerd_version.rc != 0
+
+- name: Create containerd unzip folder
+  ansible.builtin.file:
+    path: /tmp/containerd/
+    state: directory
+    mode: 770
+
+- name: Unzip containerd
+  ansible.builtin.unarchive:
+    src: /tmp/containerd-2.0.0-rc.3-linux-arm64.tar.gz
+    dest: /tmp/containerd/
+    remote_src: yes
+  when: containerd_version.rc != 0
+
+- name: Copy containerd to bin folder
+  ansible.builtin.copy:
+    src: /tmp/containerd/bin/containerd
+    dest: /usr/local/bin
+    mode: 771
+    remote_src: true
+  when: containerd_version.rc != 0
+
+- name: Delete containerd download
+  ansible.builtin.file:
+    path: /tmp/containerd-2.0.0-rc.3-linux-arm64.tar.gz
+    state: absent
+  when: containerd_version.rc != 0
+
+- name: Remove containerd tmp
+  ansible.builtin.file:
+    path: /tmp/containerd/
+    state: absent
+  when: containerd_version.rc != 0
+
+- name: Copy service file
+  ansible.builtin.copy:
+    src: files/containerd.service
+    dest: /etc/systemd/system/containerd.service
+    mode: go=
+    remote_src: true
+  when: containerd_version.rc != 0
+
+- name: Force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: containerd_version.rc != 0
+
+- name: Setup containerd service
+  ansible.builtin.service:
+    name: containerd.service
+    enabled: yes
+    state: restarted

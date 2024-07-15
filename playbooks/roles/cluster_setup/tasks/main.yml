@@ -57,12 +57,12 @@
   ansible.builtin.apt:
     update_cache: true
 
-- name: Install kubernetes dependencies
+- name: Install k8s dependencies
   ansible.builtin.package:
     name:
+      - kubelet
       - kubeadm
       - kubectl
-      - kubelet
       - kubernetes-cni
     state: present
 
@@ -76,10 +76,20 @@
     reload: true
   become: true
 
+# - name: Setup containerd
+#   ansible.builtin.include_tasks:
+#     file: containerd-setup.yml
+
 - name: Remove containerd config
   ansible.builtin.file:
     path: /etc/containerd/config.toml
     state: absent
+
+- name: Add systemd containerd config
+  ansible.builtin.copy:
+    src: files/containerd.config.toml
+    dest: /etc/containerd/config.toml
+    mode: 0644
 
 - name: Restart containerd
   ansible.builtin.service:
@@ -89,6 +99,8 @@
 - name: Get cgroup memory status
   ansible.builtin.shell:
     cmd: set -o pipefail && cat /proc/cgroups | grep memory | awk '{ print $4 }'
+  args:
+    executable: /usr/bin/bash
   changed_when: false
   register: cgroup_memory_status
 
@@ -98,8 +110,8 @@
 
 - name: Update cgroup in boot config
   ansible.builtin.shell:
-    cmd: echo -n " cgroup_enable=memory cgroup_memory=1" >> /boot/cmdline.txt
-    register: cgroup_config
+    cmd: echo -n " cgroup_enable=memory cgroup_memory=1" >> /boot/firmware/cmdline.txt
+  register: cgroup_config
   changed_when: cgroup_config.rc == 0
   when: cgroup_memory_status.stdout == "0"
 

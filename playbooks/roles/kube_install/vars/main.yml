@@ -1,8 +1,0 @@
----
-# Dependency packages to be installed
-
-kube_install_dependencies:
-  - kubelet
-  - kubeadm
-  - kubectl
-  - kubernetes-cni
