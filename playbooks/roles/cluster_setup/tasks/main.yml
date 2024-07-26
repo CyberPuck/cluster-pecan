@@ -41,7 +41,7 @@
 - name: Add kubernetes key to gpg
   ansible.builtin.command: # noqa: inline-env-var
     cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/release.key"
-    register: gpg_output
+  register: gpg_output
   changed_when: gpg_output.rc == 0
   when: not gpg_file.stat.exists
 
@@ -118,6 +118,14 @@
 - name: Reboot Pi
   ansible.builtin.reboot:
   when: cgroup_memory_status.stdout == "0"
+
+- name: Copy over kubernetes configuration file
+  ansible.builtin.template:
+    src: templates/cluster-config.yml.j2
+    dest: /etc/kubernetes/cluster-config.yml
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Setup main node
   ansible.builtin.include_tasks:

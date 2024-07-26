@@ -21,14 +21,6 @@
         cluster_token: "{{ token_first_half }}.{{ token_second_half }}"
       run_once: true
 
-    - name: Token value
-      ansible.builtin.debug:
-        msg: "{{ cluster_token }}"
-
-    - name: Test vars
-      ansible.builtin.debug:
-        msg: "{{ inventory_hostname }}"
-
     - name: Setup docker
       ansible.builtin.include_role:
         name: docker

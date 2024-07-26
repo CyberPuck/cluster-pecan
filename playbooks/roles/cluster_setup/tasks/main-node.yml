@@ -23,10 +23,6 @@
 - name: Setup cluster
   ansible.builtin.command:
     cmd: >
-      kubeadm init --pod-network-cidr {{ cluster_setup_pod_cidr }}
-      --token {{ cluster_token }}
-      --apiserver-advertise-address {{ cluster_setup_main_node_ip }}
-      --apiserver-cert-extra-sans kubernetes.cluster.home
-      --ignore-preflight-errors=Mem,Swap
-      --v=5
+      kubeadm init
+      --config /etc/kubernetes/cluster-config.yml
   changed_when: true

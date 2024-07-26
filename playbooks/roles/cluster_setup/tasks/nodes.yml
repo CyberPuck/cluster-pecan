@@ -7,7 +7,7 @@
 - name: Join cluster
   ansible.builtin.command:
     cmd: >
-      kubeadm join {{ cluster_setup_main_node_ip }}:6443
+      kubeadm join
       --discovery-token-unsafe-skip-ca-verification
-      --token={{ cluster_token }}
+      --config /etc/kubernetes/cluster-config.yml
   changed_when: true

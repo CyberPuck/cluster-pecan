@@ -8,9 +8,9 @@ cluster:
       ip_address: 10.0.0.1
     node-1:
       inventory_hostname: node-1
-      ansible_host: 10.0.0.5
+      ansible_host: 10.0.0.2
       ansible_user: pi
-      ip_address: 10.0.0.5
+      ip_address: 10.0.0.2
     node-2:
       inventory_hostname: node-2
       ansible_host: 10.0.0.3
