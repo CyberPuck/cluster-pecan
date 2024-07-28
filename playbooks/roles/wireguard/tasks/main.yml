@@ -32,18 +32,31 @@
     force: true
     mode: go=
 
-- name: Create peer private key
+- name: Create pi peer private key
   ansible.builtin.command:
     cmd: wg genkey
   changed_when: true
   register: wg_peer_private_key
 
-- name: Create peer public key
+- name: Create pi peer public key
   ansible.builtin.command:
     cmd: wg pubkey
     stdin: "{{ wg_peer_private_key.stdout }}"
   changed_when: true
   register: wg_peer_public_key
+
+- name: Create second peer private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  changed_when: true
+  register: wg_second_peer_private_key
+
+- name: Create second peer public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: "{{ wg_second_peer_private_key.stdout }}"
+  changed_when: true
+  register: wg_second_peer_public_key
 
 - name: "Check status for interface {{ wireguard_tunnel_interface }}"
   ansible.builtin.command:
@@ -70,11 +83,16 @@
     state: restarted
     enabled: true
 
-- name: "Setup peer for interface {{ wireguard_tunnel_interface }}"
+- name: "Setup pi peer for interface {{ wireguard_tunnel_interface }}"
   ansible.builtin.command:
     cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
   changed_when: true
 
-- name: "Setting up peer"
+- name: "Setup second peer for interface {{ wireguard_tunnel_interface }}"
+  ansible.builtin.command:
+    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_second_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
+  changed_when: true
+
+- name: "Setting up peers"
   ansible.builtin.include_tasks:
     file: peer.yml

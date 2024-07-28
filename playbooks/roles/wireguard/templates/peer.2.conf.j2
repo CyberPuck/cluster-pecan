@@ -1,6 +1,6 @@
 [Interface]
-PrivateKey = {{ wg_peer_private_key.stdout }}
-Address = {{ wireguard_pi_peer_ip }}
+PrivateKey = {{ wg_second_peer_private_key.stdout }}
+Address = {{ wireguard_second_peer_ip }}
 
 [Peer]
 PublicKey = {{ wg_public_key.stdout }}

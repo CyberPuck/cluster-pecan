@@ -12,10 +12,6 @@
       {{ cluster_setup_node_2_ip }} node-2
       {{ cluster_setup_node_3_ip }} node-3
 
-- name: Cluster Token
-  ansible.builtin.debug:
-    msg: "{{ cluster_token }}"
-
 - name: Setup keyring folder
   ansible.builtin.file:
     path: /etc/apt/keyrings
@@ -76,10 +72,6 @@
     reload: true
   become: true
 
-# - name: Setup containerd
-#   ansible.builtin.include_tasks:
-#     file: containerd-setup.yml
-
 - name: Remove containerd config
   ansible.builtin.file:
     path: /etc/containerd/config.toml
@@ -103,10 +95,6 @@
     executable: /usr/bin/bash
   changed_when: false
   register: cgroup_memory_status
-
-- name: Debug cgroup_memory_status
-  ansible.builtin.debug:
-    msg: "{{ cgroup_memory_status.stdout }}"
 
 - name: Update cgroup in boot config
   ansible.builtin.shell:

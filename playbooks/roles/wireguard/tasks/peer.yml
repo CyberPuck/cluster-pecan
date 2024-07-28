@@ -15,6 +15,13 @@
     mode: "0644"
   delegate_to: localhost
 
+- name: Writing second peer config to local file
+  ansible.builtin.template:
+    src: "templates/peer.2.conf.j2"
+    dest: "{{ wireguard_tunnel_interface }}.2.peer.conf"
+    mode: "0644"
+  delegate_to: localhost
+
 - name: Get peer localhost interfaces
   ansible.builtin.setup:
     gather_subset:
