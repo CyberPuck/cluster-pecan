@@ -8,10 +8,10 @@ ACTIVATE_FILE="`pwd`/venv/bin/activate"
 echo "file location: $ACTIVATE_FILE"
 
 if [ -f "$ACTIVATE_FILE" ]; then
-echo "File exists"
+    echo "File exists"
 fi
 
-source "$ACTIVATE_FILE"
+. "$ACTIVATE_FILE"
 
 echo "Installing requirements"
 pip install -r requirements.txt
