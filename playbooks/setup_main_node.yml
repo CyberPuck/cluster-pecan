@@ -1,0 +1,46 @@
+---
+# This is the first round of main-node setup
+
+- name: Setup main-node networking
+  # Multiple services require root, run entire package as root
+  # Please ensure the folder created have the correct **user** permissions
+  hosts: main-node
+  become: true
+
+  tasks:
+    - name: Read in inventory file
+      ansible.builtin.include_vars:
+        file: "{{ ansible_inventory_sources[0] }}"
+        name: inventory_file
+
+    - name: Setup docker
+      ansible.builtin.include_role:
+        name: docker
+
+    - name: Run networking role
+      ansible.builtin.include_role:
+        name: networking
+      vars:
+        networking_ip_address: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
+
+    - name: Setup kea-dhcp4
+      ansible.builtin.include_role:
+        name: kea
+      vars:
+        kea_dhcp_interfaces: ["eth0"]
+        kea_dhcp4_subnets:
+          - subnet: "10.0.0.0/24"
+            pools:
+              - pool: "10.0.0.2 - 10.0.0.20"
+            option-data:
+              - name: "routers"
+                data: "{{ inventory_file.cluster.hosts['main-node'].ip_address }}"
+              - name: "domain-name-servers"
+                data: "1.1.1.1, 9.9.9.9"
+              - name: "domain-name"
+                data: "cluster.home"
+            id: 1
+
+    - name: Run wireguard role
+      ansible.builtin.include_role:
+        name: wireguard

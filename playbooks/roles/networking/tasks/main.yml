@@ -1,0 +1,38 @@
+---
+# tasks file for networking
+
+# Turn on IP Forwarding for masquerading
+- name: Setup IP Forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
+# nmcli, set metric high so wlan0 can access Internet
+- name: Setup static network on eth0
+  community.general.nmcli:
+    conn_name: cluster-net
+    ifname: eth0
+    type: ethernet
+    ip4: 10.0.0.1/24
+    gw4: 10.0.0.1
+    routes4_extended:
+      - ip: "10.0.0.1/24"
+        metric: 1024
+    state: present
+
+# NFTable setup
+- name: Overwrite nftables.conf
+  ansible.builtin.copy:
+    src: files/nftables.conf
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  notify:
+    - Enable and restart NFTables
+    - Reboot Pi

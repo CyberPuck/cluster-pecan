@@ -1,0 +1,4 @@
+---
+# vars file for networking
+
+networking_broadcast_address: "10.0.0.255"

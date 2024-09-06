@@ -12,5 +12,8 @@ jobs:
         with:
           fetch-depth: 0 # needed for progressive mode to work
 
-      - name: Ansible Linter
-        uses: ansible/ansible-lint-action@main
+      - name: Setup and run linter
+        run: |
+          ${PWD}/setup_venv.sh
+          source ${PWD}/venv/bin/activate
+          ansible-lint

@@ -1,0 +1,51 @@
+---
+
+- name: Setup keyring folder
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    owner: root
+    group: root
+    mode: '0755'
+    state: 'directory'
+
+- name: Pull docker GPG key
+  ansible.builtin.uri:
+    url: https://download.docker.com/linux/raspbian/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    follow_redirects: 'all'
+    status_code: [200, 304]
+    mode: 'a+r'
+
+- name: Get Arch
+  ansible.builtin.command:
+    cmd: dpkg --print-architecture
+  register: docker_arch
+  changed_when: false
+
+- name: Get VERSION_CODENAME
+  ansible.builtin.shell:
+    cmd: . /etc/os-release && echo "$VERSION_CODENAME"
+  register: version_codename
+  changed_when: false
+
+- name: Create apt docker file
+  ansible.builtin.template:
+    src: templates/docker.list.j2
+    dest: /etc/apt/sources.list.d/docker.list
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Apt Update
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install docker
+  ansible.builtin.package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present

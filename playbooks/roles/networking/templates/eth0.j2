@@ -1,0 +1,6 @@
+allow-hotplug eth0
+iface eth0 inet static
+    address {{ networking_ip_address }}
+    netmask 255.255.255.0
+    broadcast {{ networking_broadcast_address }}
+    gateway {{ networking_ip_address }}

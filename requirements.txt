@@ -1,0 +1,5 @@
+ansible==9.3.0
+# Needed for ssh_config
+paramiko==3.1.0
+# linter
+ansible-lint==24.6.0

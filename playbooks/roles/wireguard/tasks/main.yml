@@ -1,0 +1,98 @@
+---
+- name: Install WireGuard
+  ansible.builtin.package:
+    name:
+      - wireguard
+    state: present
+
+- name: Generate private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  changed_when: true
+  register: wg_private_key
+
+- name: Write private key
+  ansible.builtin.copy:
+    content: "{{ wg_private_key.stdout }}"
+    dest: /etc/wireguard/private.key
+    force: true
+    mode: go=
+
+- name: Generate public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: "{{ wg_private_key.stdout }}"
+  changed_when: true
+  register: wg_public_key
+
+- name: Write public key
+  ansible.builtin.copy:
+    content: "{{ wg_public_key.stdout }}"
+    dest: /etc/wireguard/public.key
+    force: true
+    mode: go=
+
+- name: Create pi peer private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  changed_when: true
+  register: wg_peer_private_key
+
+- name: Create pi peer public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: "{{ wg_peer_private_key.stdout }}"
+  changed_when: true
+  register: wg_peer_public_key
+
+- name: Create second peer private key
+  ansible.builtin.command:
+    cmd: wg genkey
+  changed_when: true
+  register: wg_second_peer_private_key
+
+- name: Create second peer public key
+  ansible.builtin.command:
+    cmd: wg pubkey
+    stdin: "{{ wg_second_peer_private_key.stdout }}"
+  changed_when: true
+  register: wg_second_peer_public_key
+
+- name: "Check status for interface {{ wireguard_tunnel_interface }}"
+  ansible.builtin.command:
+    cmd: "wg showconf {{ wireguard_tunnel_interface }}"
+  changed_when: true
+  ignore_errors: true
+  register: tunnel_status
+
+- name: "Shutdown server interface {{ wireguard_tunnel_interface }}"
+  ansible.builtin.command:
+    cmd: "wg-quick down {{ wireguard_tunnel_interface }}"
+  when: tunnel_status.rc == 0
+  changed_when: tunnel_status.rc == 0
+
+- name: Setup config for interface {{ wireguard_tunnel_interface }}
+  ansible.builtin.template:
+    src: "templates/conf.j2"
+    dest: /etc/wireguard/{{ wireguard_tunnel_interface }}.conf
+    mode: go=
+
+- name: Enable and bounce WireGuard Service
+  ansible.builtin.service:
+    name: wg-quick@{{ wireguard_tunnel_interface }}.service
+    state: restarted
+    enabled: true
+
+- name: "Setup pi peer for interface {{ wireguard_tunnel_interface }}"
+  ansible.builtin.command:
+    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
+  changed_when: true
+
+- name: "Setup second peer for interface {{ wireguard_tunnel_interface }}"
+  ansible.builtin.command:
+    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_second_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
+  changed_when: true
+
+- name: "Setting up peers"
+  ansible.builtin.include_tasks:
+    file: peer.yml

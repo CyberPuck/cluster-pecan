@@ -1,0 +1,28 @@
+---
+- name: Create swap folder for kubernetes
+  ansible.builtin.file:
+    path: /etc/systemd/system/kubelet.service.d
+    state: directory
+    mode: go=
+
+- name: Create swap file
+  ansible.builtin.copy:
+    src: files/20-allow-swap.conf
+    dest: /etc/systemd/system/kubelet.service.d/20-allow-swap.conf
+    mode: go=
+
+- name: Restart daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Reset kubeadm
+  ansible.builtin.command:
+    cmd: kubeadm reset -f
+  changed_when: true
+
+- name: Setup cluster
+  ansible.builtin.command:
+    cmd: >
+      kubeadm init
+      --config /etc/kubernetes/cluster-config.yml
+  changed_when: true

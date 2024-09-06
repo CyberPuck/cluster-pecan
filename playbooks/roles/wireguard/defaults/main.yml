@@ -1,0 +1,8 @@
+---
+wireguard_tunnel_interface: wg0
+wireguard_server_address: main-node
+wireguard_server_ip: 10.0.1.1/24
+wireguard_server_port: 51820
+wireguard_pi_peer_ip: 10.0.1.2/24
+wireguard_second_peer_ip: 10.0.1.3/24
+wireguard_allowed_ips: 10.0.0.0/23

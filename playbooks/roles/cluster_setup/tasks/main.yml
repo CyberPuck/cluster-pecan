@@ -1,0 +1,126 @@
+---
+# tasks file for cluster-setup
+
+- name: Setup host file
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    append_newline: true
+    prepend_newline: true
+    block: |
+      {{ cluster_setup_main_node_ip }} main-node
+      {{ cluster_setup_node_1_ip }} node-1
+      {{ cluster_setup_node_2_ip }} node-2
+      {{ cluster_setup_node_3_ip }} node-3
+
+- name: Setup keyring folder
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    owner: root
+    group: root
+    mode: "0755"
+    state: "directory"
+
+- name: Pull kubernetes release key
+  ansible.builtin.uri:
+    url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+    dest: /etc/apt/keyrings/release.key
+    follow_redirects: "all"
+    status_code: [200, 304]
+    method: "GET"
+    mode: "a+r"
+
+- name: Get data on GPG file
+  ansible.builtin.stat:
+    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  register: gpg_file
+
+- name: Add kubernetes key to gpg
+  ansible.builtin.command: # noqa: inline-env-var
+    cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/release.key"
+  register: gpg_output
+  changed_when: gpg_output.rc == 0
+  when: not gpg_file.stat.exists
+
+- name: Create apt kubernetes file
+  ansible.builtin.template:
+    src: templates/kubernetes.list.j2
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Apt Update
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install k8s dependencies
+  ansible.builtin.package:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - kubernetes-cni
+    state: present
+
+# Turn on IP Forwarding for kubernetes
+- name: Verify IP forwarding is enabled and started
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
+- name: Remove containerd config
+  ansible.builtin.file:
+    path: /etc/containerd/config.toml
+    state: absent
+
+- name: Add systemd containerd config
+  ansible.builtin.copy:
+    src: files/containerd.config.toml
+    dest: /etc/containerd/config.toml
+    mode: "0644"
+
+- name: Restart containerd
+  ansible.builtin.service:
+    name: containerd.service
+    state: restarted
+
+- name: Get cgroup memory status
+  ansible.builtin.shell:
+    cmd: set -o pipefail && cat /proc/cgroups | grep memory | awk '{ print $4 }'
+  args:
+    executable: /usr/bin/bash
+  changed_when: false
+  register: cgroup_memory_status
+
+- name: Update cgroup in boot config
+  ansible.builtin.shell:
+    cmd: echo -n " cgroup_enable=memory cgroup_memory=1" >> /boot/firmware/cmdline.txt
+  register: cgroup_config
+  changed_when: cgroup_config.rc == 0
+  when: cgroup_memory_status.stdout == "0"
+
+- name: Reboot Pi
+  ansible.builtin.reboot:
+  when: cgroup_memory_status.stdout == "0"
+
+- name: Copy over kubernetes configuration file
+  ansible.builtin.template:
+    src: templates/cluster-config.yml.j2
+    dest: /etc/kubernetes/cluster-config.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Setup main node
+  ansible.builtin.include_tasks:
+    file: main-node.yml
+  when: inventory_hostname == "main-node"
+
+- name: Setup nodes
+  ansible.builtin.include_tasks:
+    file: nodes.yml
+  when: inventory_hostname != "main-node"

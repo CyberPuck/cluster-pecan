@@ -1,0 +1,14 @@
+---
+# Simple playbook for setting up a local machine to SSH into the cluster
+
+- name: Setup SSH
+  hosts: localhost
+  tasks:
+    - name: Configure local SSH settings for main node
+      community.general.ssh_config:
+        remote_user: pi
+        user: "{{ lookup('env', 'USER') }}"
+        host: "main-node"
+        hostname: "main-node"
+        identity_file: "~/.ssh/cluster_key"
+        state: "present"

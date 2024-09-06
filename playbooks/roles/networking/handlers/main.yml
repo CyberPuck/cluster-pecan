@@ -1,0 +1,13 @@
+---
+# handlers file for networking
+
+- name: Enable and restart NFTables
+  ansible.builtin.service:
+    name: nftables
+    enabled: true
+    state: restarted
+  become: true
+
+- name: Reboot Pi
+  ansible.builtin.reboot:
+  become: true
