@@ -34,7 +34,7 @@ kind: ClusterConfiguration
 kubernetesVersion: 1.30.0
 networking:
   dnsDomain: cluster.local
-  serviceSubnet: {{ cluster_setup_pod_cidr }}
+  podSubnet: {{ cluster_setup_pod_cidr }}
 scheduler: {}
 ---
 # Join
