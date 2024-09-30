@@ -8,6 +8,5 @@
   ansible.builtin.command:
     cmd: >
       kubeadm join
-      --discovery-token-unsafe-skip-ca-verification
       --config /etc/kubernetes/cluster-config.yml
   changed_when: true
