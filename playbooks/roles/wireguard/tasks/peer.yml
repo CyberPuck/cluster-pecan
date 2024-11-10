@@ -1,4 +1,11 @@
 ---
+- name: Check for Wiregaurd on peer
+  ansible.builtin.command:
+    cmd: "apt show wireguard"
+  changed_when: true
+  register: wireguard_installed
+  delegate_to: localhost
+
 - name: Install WireGuard on peer
   ansible.builtin.package:
     name:
@@ -7,6 +14,7 @@
   register: wireguard_install
   failed_when: wireguard_install.rc != 0
   delegate_to: localhost
+  when: wireguard_installed.rc != 0
 
 - name: Writing peer config to local file
   ansible.builtin.template:
