@@ -1,0 +1,61 @@
+---
+- name: Setup keyring folder
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    owner: root
+    group: root
+    mode: "0755"
+    state: "directory"
+
+# Due to changing signatures, delete the keys every time
+- name: Delete release.key
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/release.key
+    state: absent
+
+- name: Delete kubernetes-apt-keyring.gpg
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    state: absent
+
+- name: Pull kubernetes release key
+  ansible.builtin.uri:
+    url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+    dest: /etc/apt/keyrings/release.key
+    follow_redirects: "all"
+    status_code: [200, 304]
+    method: "GET"
+    mode: "a+r"
+
+- name: Get data on GPG file
+  ansible.builtin.stat:
+    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  register: gpg_file
+
+- name: Add kubernetes key to gpg
+  ansible.builtin.command: # noqa: inline-env-var
+    cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/release.key"
+  register: gpg_output
+  changed_when: gpg_output.rc == 0
+  when: not gpg_file.stat.exists
+
+- name: Create apt kubernetes file
+  ansible.builtin.template:
+    src: templates/kubernetes.list.j2
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Apt Update
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install k8s dependencies
+  ansible.builtin.package:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - kubernetes-cni
+    state: present

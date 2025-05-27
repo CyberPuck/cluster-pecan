@@ -2,4 +2,11 @@
 PrivateKey = {{ wg_private_key.stdout }}
 Address = {{ wireguard_server_ip }}
 ListenPort = {{ wireguard_server_port }}
-SaveConfig = true
+
+[Peer]
+PublicKey = {{ wg_peer_public_key.stdout }}
+AllowedIps = {{ wireguard_allowed_ips }}
+
+[Peer]
+PublicKey = {{ wg_second_peer_public_key.stdout }}
+AllowedIps = {{ wireguard_allowed_ips }}

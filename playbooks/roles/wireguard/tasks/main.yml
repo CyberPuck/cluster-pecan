@@ -83,15 +83,15 @@
     state: restarted
     enabled: true
 
-- name: "Setup pi peer for interface {{ wireguard_tunnel_interface }}"
-  ansible.builtin.command:
-    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
-  changed_when: true
-
-- name: "Setup second peer for interface {{ wireguard_tunnel_interface }}"
-  ansible.builtin.command:
-    cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_second_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
-  changed_when: true
+# - name: "Setup pi peer for interface {{ wireguard_tunnel_interface }}"
+#   ansible.builtin.command:
+#     cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
+#   changed_when: true
+#
+# - name: "Setup second peer for interface {{ wireguard_tunnel_interface }}"
+#   ansible.builtin.command:
+#     cmd: "wg set {{ wireguard_tunnel_interface }} peer {{ wg_second_peer_public_key.stdout }} allowed-ips {{ wireguard_allowed_ips }}"
+#   changed_when: true
 
 - name: "Setting up peers"
   ansible.builtin.include_tasks:

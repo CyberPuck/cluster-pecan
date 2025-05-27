@@ -13,6 +13,10 @@
         file: "{{ ansible_inventory_sources[0] }}"
         name: inventory_file
 
+    - name: Install Kubernetes components
+      ansible.builtin.include_role:
+        name: kubernetes
+
     - name: Setup docker
       ansible.builtin.include_role:
         name: docker
