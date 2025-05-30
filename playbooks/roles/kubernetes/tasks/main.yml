@@ -20,7 +20,7 @@
 
 - name: Pull kubernetes release key
   ansible.builtin.uri:
-    url: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/deb/Release.key"
+    url: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_k8s_version }}/deb/Release.key"
     dest: /etc/apt/keyrings/release.key
     follow_redirects: "all"
     status_code: [200, 304]

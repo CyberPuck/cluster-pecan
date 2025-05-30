@@ -34,4 +34,4 @@
         cluster_setup_node_1_ip: "{{ inventory_file.cluster.hosts['node-1'].ip_address }}"
         cluster_setup_node_2_ip: "{{ inventory_file.cluster.hosts['node-2'].ip_address }}"
         cluster_setup_node_3_ip: "{{ inventory_file.cluster.hosts['node-3'].ip_address }}"
-        k8s_version: "{{ inventory_file.k8s_version }}"
+        cluster_setup_k8s_version: "{{ inventory_file.k8s_version }}"
