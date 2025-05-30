@@ -16,6 +16,8 @@
     - name: Install Kubernetes components
       ansible.builtin.include_role:
         name: kubernetes
+      vars:
+        k8s_version: "{{ inventory_file.k8s_version }}"
 
     - name: Setup docker
       ansible.builtin.include_role:
