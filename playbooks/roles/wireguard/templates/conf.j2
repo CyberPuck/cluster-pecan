@@ -5,8 +5,8 @@ ListenPort = {{ wireguard_server_port }}
 
 [Peer]
 PublicKey = {{ wg_peer_public_key.stdout }}
-AllowedIps = {{ wireguard_allowed_ips }}
+AllowedIps = {{ wireguard_pi_peer_ip }}
 
 [Peer]
 PublicKey = {{ wg_second_peer_public_key.stdout }}
-AllowedIps = {{ wireguard_allowed_ips }}
+AllowedIps = {{ wireguard_second_peer_ip }}
