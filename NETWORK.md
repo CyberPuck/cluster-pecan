@@ -7,23 +7,7 @@ is reserved for UDP multicast.
 
 ## Remote Access
 
-Instructions online all talk of using the main-node as a jump host and once
-SSHed into main-node, SSHing into the other resources from there. A simpler
-solution is going to be installing OpenVPN on main-node and then configuring
-the Ansible controller to tunnel into the cluster network.
+Remove access is through WireGuard running on the router. This will give full
+network access to the cluster, from there kubectl, kubeadm, k9s, or ssh can be
+leveraged.
 
-### OpenVPN Configuration
-
-OpenVPN is configured with the following repo:
-https://github.com/pivpn/pivpn
-
-The current example is the following:
-```BASH
-curl -L https://install.pivpn.io | bash -s --unattended /etc/pivpn/setupVars.conf
-```
-
-This will install OpenVPN on `main-node` with the user `pi` having an OpenVPN
-certificate generated for access to the network.
-
-There might need to be considerations for the configuration. The example
-provided might not support headless/IaC installation.
