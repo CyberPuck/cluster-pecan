@@ -5,10 +5,10 @@ code needed to setup a simple Raspberry Pi cluster for experimentation.
 
 This will setup four individual nodes:
 
-1. main-node (bridge from the Internet to the cluster network, DHCP)
-2. node-1
-3. node-2
-4. node-3
+1. router (bridge from the Internet to the cluster network, DHCP)
+2. main-node
+3. node-1
+4. node-2
 
 ## Setup Command Computer
 
